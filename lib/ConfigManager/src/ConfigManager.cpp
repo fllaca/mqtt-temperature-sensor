@@ -86,9 +86,6 @@ void ConfigManager::startConfigMode(){
 
   //set config save notify callback
   wifiManager.setSaveConfigCallback(saveConfigCallback);
-
-  //set static ip
-  //wifiManager.setSTAStaticIPConfig(IPAddress(10,0,1,99), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
   
   //add all your parameters here
   wifiManager.addParameter(&custom_mqtt_server);
@@ -147,44 +144,3 @@ void ConfigManager::autoConnect() {
 
   saveConfig();
 }
-
-
-/*
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  pinMode(TRIGGER_CONFIG_PIN, INPUT);
-  Serial.println();
-
-  //clean FS, for testing
-  //SPIFFS.format();
-
-  //read configuration from FS json
-  readConfig();
-  //end read
-
-  startConfig();
-
-  //save the custom parameters to FS
-  saveConfig();
-
-  Serial.println("local ip");
-  Serial.println(WiFi.localIP());
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.println("Doing stuff");
-  delay(3000);
-  Serial.println("Doing more stuff");
-  delay(3000);
-  if ( digitalRead(TRIGGER_CONFIG_PIN) == LOW ) {
-    Serial.println("Now reconfigure");
-    delay(3000);
-    startConfig();
-  } else {
-    Serial.println("Configuration mode not detected");
-  }
-}
-*/

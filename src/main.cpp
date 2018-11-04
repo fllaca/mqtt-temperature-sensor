@@ -7,11 +7,12 @@
 #include <ConfigManager.h>
 
 // Data wire is plugged into pin D6 on the NodeMCU v3
-#define ONE_WIRE_BUS D6
+#define ONE_WIRE_BUS D5
 #define MAX_RETRIES 10
 #define SECONDS 1000
 
-#define TRIGGER_CONFIG_PIN D1
+#define BUTTON_PIN D2
+#define LED_PIN D1
 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
@@ -62,11 +63,22 @@ void handleRootPath() {
   //server.send(200, "application/json", lastState);
 }
 
+void ledOn(){
+  digitalWrite(LED_PIN, HIGH);
+}
+
+void ledOff(){
+  digitalWrite(LED_PIN, LOW);
+}
+
 // only runs once on boot
 void setup() {
   // Initializing serial port for debugging purposes
   Serial.begin(9600);
-  delay(10);
+  pinMode(BUTTON_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  ledOff();
+  delay(5);
 
   DS18B20.begin(); // IC Default 9 bit. If you have troubles consider upping it 12. Ups the delay giving the IC more time to process the temperature measurement
   
@@ -76,7 +88,9 @@ void setup() {
   configManager.readConfig();
   
   // Try Connecting to WiFi network
+  ledOn();
   configManager.autoConnect();
+  ledOff();
   Serial.println("");
   Serial.println("WiFi connected");
  
@@ -113,10 +127,12 @@ void reconnect() {
 void loop() {
   
   // if button pressed, start configuration mode
-  if ( digitalRead(TRIGGER_CONFIG_PIN) == LOW ) {
+  if ( digitalRead(BUTTON_PIN) == HIGH ) {
+    ledOn();
     Serial.println("Now reconfigure");
     delay(3 * SECONDS);
     configManager.startConfigMode();
+    ledOff();
   }
 
   if (!client.connected()) {
